@@ -1,8 +1,24 @@
-﻿{
+{
   "name": "whatsapp-job-assistant",
   "version": "1.0.0",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js"
+  },
+  "description": "Private prototype. Internal use only.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bot4orgeai-eng/Project-bot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/bot4orgeai-eng/Project-bot/issues"
+  },
+  "homepage": "https://github.com/bot4orgeai-eng/Project-bot#readme",
+  "dependencies": {
+    "express": "^5.2.1"
   }
 }
