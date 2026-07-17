@@ -19,6 +19,8 @@
   },
   "homepage": "https://github.com/bot4orgeai-eng/Project-bot#readme",
   "dependencies": {
+    "@supabase/supabase-js": "^2.110.7",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1"
   }
 }
