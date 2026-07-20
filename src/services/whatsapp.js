@@ -1,24 +1,36 @@
-﻿// Sends WhatsApp messages via Cloud API
+﻿// Sends WhatsApp messages via Infobip API
 const axios = require('axios');
 
-const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID;
-const ACCESS_TOKEN = process.env.WHATSAPP_ACCESS_TOKEN;
+const BASE_URL = process.env.INFOBIP_BASE_URL; // e.g. https://xxxxx.api.infobip.com
+const API_KEY = process.env.INFOBIP_API_KEY;
+const SENDER = process.env.INFOBIP_WHATSAPP_SENDER; // your Infobip WhatsApp number
 
 async function sendMessage(to, text) {
-  const url = `https://graph.facebook.com/v19.0/${PHONE_NUMBER_ID}/messages`;
+  const url = `${BASE_URL}/messages-api/1/messages`;
 
   try {
     await axios.post(
       url,
       {
-        messaging_product: 'whatsapp',
-        to: to,
-        text: { body: text }
+        messages: [
+          {
+            channel: 'WHATSAPP',
+            sender: SENDER,
+            destinations: [{ to: to }],
+            content: {
+              body: {
+                text: text,
+                type: 'TEXT'
+              }
+            }
+          }
+        ]
       },
       {
         headers: {
-          Authorization: `Bearer ${ACCESS_TOKEN}`,
-          'Content-Type': 'application/json'
+          Authorization: `App ${API_KEY}`,
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
         }
       }
     );
