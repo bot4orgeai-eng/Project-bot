@@ -1,41 +1,24 @@
-﻿const express = require('express');
+﻿// Receives incoming WhatsApp messages// This file listens for incoming WhatsApp messages forwarded by Infobip
+const express = require('express');
 const router = express.Router();
+
+// NEW: import the sendMessage function so we can reply
 const { sendMessage } = require('../services/whatsapp');
-const { getOrCreateUser, getState } = require('../db/stateManager');
-const { startCvFlow, handleCvFlowMessage } = require('../services/cvFlow');
-const { isPaidUser, UPGRADE_MESSAGE } = require('../services/accessControl');
 
-router.post('/webhook', async (req, res) => {
-  const result = req.body.results?.[0];
-  const from = result?.from;
-  const text = result?.message?.text;
+// This function runs every time Infobip sends a POST request to /webhook
+router.post('/', (req, res) => {
+  // req.body contains the actual message data Infobip sent us
+  console.log('Incoming WhatsApp payload:', JSON.stringify(req.body, null, 2));
 
-  if (from && text) {
-    console.log(`Message from ${from}: ${text}`);
-
-    const user = await getOrCreateUser(from);
-    if (!user) {
-      res.sendStatus(200);
-      return;
-    }
-
-    const state = await getState(user.id);
-    console.log(`User ${from} is currently on stage: ${state.stage}`);
-
-    if (state.stage === 'idle' && /cv/i.test(text)) {
-      const paid = await isPaidUser(user.id);
-      if (!paid) {
-        await sendMessage(from, UPGRADE_MESSAGE);
-      } else {
-        await startCvFlow(user);
-      }
-    } else if (state.stage === 'cv_flow') {
-      await handleCvFlowMessage(user, state, text);
-    } else {
-      await sendMessage(from, `You said: ${text} (stage: ${state.stage})`);
-    }
+  // NEW: pull out the sender's number and message text, then echo it back
+  const incoming = req.body.results?.[0];
+  if (incoming && incoming.message?.type === 'TEXT') {
+    const from = incoming.from;
+    const text = incoming.message.text;
+    sendMessage(from, text); // echoes the same text back to the sender
   }
 
+  // We MUST respond quickly, or Infobip will think delivery failed and retry
   res.sendStatus(200);
 });
 
