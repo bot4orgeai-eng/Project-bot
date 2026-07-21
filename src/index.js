@@ -1,4 +1,5 @@
-﻿// Entry point: starts the Express server
+﻿require('dotenv').config();
+// Entry point: starts the Express server
 
 const express = require('express');
 const app = express();
