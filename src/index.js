@@ -1,5 +1,6 @@
-﻿// Entry point: starts the Express server
-
+﻿require('dotenv').config();
+// Entry point: starts the Express server
+require('./jobs/alertScheduler');
 const express = require('express');
 const app = express();
 

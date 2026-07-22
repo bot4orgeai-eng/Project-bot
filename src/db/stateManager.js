@@ -51,5 +51,15 @@ async function setState(userId, stage, data = {}) {
     console.error('Error updating state:', error.message);
   }
 }
-
-module.exports = { getOrCreateUser, getState, setState };
+async function getUsersWithAlertKeyword() {
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .not('alert_keyword', 'is', null);
+  if (error) {
+    console.error('Error fetching users with alert keywords:', error.message);
+    return [];
+  }
+  return data;
+}
+module.exports = { getOrCreateUser, getState, setState, getUsersWithAlertKeyword };
