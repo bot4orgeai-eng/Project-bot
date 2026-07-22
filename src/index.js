@@ -1,5 +1,6 @@
-﻿// Entry point: starts the Express server
-
+﻿require('dotenv').config();
+// Entry point: starts the Express server
+require('./jobs/alertScheduler');
 const express = require('express');
 const app = express();
 
@@ -12,6 +13,9 @@ app.get('/', (req, res) => {
 
 // NEW: any request to /webhook gets handled by the router in routes/webhook.js
 app.use('/webhook', require('./routes/webhook'));
+
+// Opay payment webhook — separate route, separate concern from WhatsApp inbound
+app.use('/opay-webhook', require('./routes/opayWebhook'));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
